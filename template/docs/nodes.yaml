@@ -1,0 +1,19 @@
+# CartoAgent Node Registry
+# 由 /ca-scout 初始化，/ca-navigate 自動擴充
+#
+# Node Schema:
+#   - name: {module-name}          # 模組唯一識別名
+#     path: {relative-path}        # 相對於 repo root 的路徑
+#     group: {group-name}          # 分組（如 frontend, backend, shared, infra）
+#     comm:                        # 通訊機制（選填）
+#       - type: {import | rest-api | workspace-dep | event | proxy}
+#         target: {target-module}
+#         description: {描述}
+#     edges:                       # 依賴的其他模組（選填）
+#       - {dependency-module-name}
+#     refs:                        # 相關參考檔案（選填）
+#       - {relative-path}
+
+version: '1.0'
+project: '{project-name}'
+nodes: []

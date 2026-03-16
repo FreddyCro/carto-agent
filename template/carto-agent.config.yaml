@@ -1,0 +1,46 @@
+# CartoAgent Configuration
+# 填寫此檔案後執行 /ca-scout 完成初始化
+# 或讓 agent 透過一問一答幫你生成
+
+project:
+  name: "{project-name}"
+  language: zh-TW                      # zh-TW / en / ja / etc.
+
+identity:
+  repo_type: monorepo                  # monorepo / single-package
+  framework: []                        # e.g. [Vue 3, Nuxt 3, React, Node.js]
+  build_tool: ""                       # e.g. Vite, Webpack, Turbopack
+  packages:                            # 主要 packages（single-package 只需一個）
+    - path: ""
+      description: ""
+
+commands:
+  install: ""                          # e.g. pnpm install
+  dev: ""                              # e.g. pnpm dev
+  test: ""                             # e.g. pnpm test
+  lint: ""                             # e.g. pnpm lint
+  build: ""                            # e.g. pnpm build
+
+issue_tracking:
+  platform: ""                         # github / gitlab / jira / linear / none
+  url_pattern: ""                      # e.g. https://github.com/user/repo/issues/{id}
+  template_path: ""                    # e.g. .github/ISSUE_TEMPLATE/ / N/A
+
+conventions:
+  commit_style: conventional           # conventional / freeform
+  branch_naming: "{id}-{slug}"         # e.g. feature/{id}-{slug}
+  file_naming: kebab-case              # kebab-case / camelCase / PascalCase
+
+key_paths:
+  modules: []                          # e.g. [src/packages/, src/modules/]
+  shared: []                           # e.g. [src/utils/, shared/]
+
+# Agent 設定
+# CartoAgent 的 skills 是純 markdown 指令集，任何能讀寫檔案的 AI agent 都能使用。
+# 不同 agent 有不同的 constitution file（專案指令檔）：
+#   claude-code  → CLAUDE.md
+#   cursor       → .cursorrules
+#   windsurf     → .windsurfrules
+#   generic      → AGENT.md
+agent:
+  type: claude-code                    # claude-code / cursor / windsurf / generic
