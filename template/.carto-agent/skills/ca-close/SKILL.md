@@ -29,9 +29,9 @@ description: Issue 收尾 — distill 知識 + 生成結構化 issue comment
 
 根據變更範圍判斷 Tier：
 - **Tier 1**（單檔修改、明確 bug）→ 跳過 distill，直接到步驟 5
-- **Tier 2+**（跨多檔、新功能、重構）→ 執行步驟 4 distill
+- **Tier 2**（跨多檔、新功能、重構、架構變更）→ 執行步驟 4 distill
 
-### Step 4: Distill（Tier 2+ 限定）
+### Step 4: Distill（Tier 2 限定）
 
 #### 4a. 建立 ADR
 

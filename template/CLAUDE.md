@@ -46,17 +46,11 @@
 流程：修 → test → commit
 完成時（選填）：non-obvious 發現加到 docs/map/gotchas.md
 
-### Tier 2: Medium Task
+### Tier 2: Planned Task
 
-觸發：跨多檔、新模組、內部重構
-流程：建 ADR-lite → 實作 → distill
-完成時：更新 docs/adr/INDEX.md、同步 gotchas
-
-### Tier 3: Full Spec
-
-觸發：跨模組遷移、架構變更
-流程：建完整 ADR → 建 PLAN.md → 實作 → distill
-完成時：更新 INDEX.md、同步 gotchas、更新架構文件
+觸發：跨多檔、新模組、重構、架構變更
+流程：建 ADR + PLAN.md → 實作 → distill
+完成時：更新 docs/adr/INDEX.md、同步 gotchas、更新架構文件
 
 ### 收尾標準步驟（所有 Tier）
 

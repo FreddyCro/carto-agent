@@ -12,7 +12,7 @@
 
 {決策內容和理由。只記錄 issue 沒有的實作層知識。}
 
-## Architecture (optional, Tier 2/3)
+## Architecture (optional)
 
 ```mermaid
 sequenceDiagram

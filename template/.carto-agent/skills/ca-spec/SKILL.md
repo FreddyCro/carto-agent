@@ -22,7 +22,7 @@ description: ADR 生命週期管理（distill / review / check）
 2. 寫入或更新對應的 ADR（使用 `docs/adr/_TEMPLATE-ADR.md` 格式，10-15 行）
 3. 更新 `docs/adr/INDEX.md`
 4. 將新 gotchas 同步到 `docs/map/gotchas.md`
-5. 如果是 Tier 2/3，加入 Architecture section（Mermaid 圖）
+5. 如果是 Tier 2，加入 Architecture section（Mermaid 圖）
 6. 主動追問不足的資訊：
    - 「你考慮過哪些替代方案？」
    - 「這個決策有什麼負面後果或已知限制？」

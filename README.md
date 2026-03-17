@@ -121,8 +121,7 @@ flowchart TB
 | Tier | 觸發條件 | 流程 | 文件產出 |
 |------|---------|------|---------|
 | **Tier 1: Quick Fix** | 單檔修改、bug 修復 | 修 → test → commit | 無（可選加 gotcha） |
-| **Tier 2: Medium Task** | 跨多檔、新模組、重構 | 建 ADR-lite → 實作 → distill | ADR |
-| **Tier 3: Full Spec** | 跨模組遷移、架構變更 | 建 ADR + PLAN.md → 實作 → distill | ADR + PLAN.md + 拓撲更新 |
+| **Tier 2: Planned Task** | 跨多檔、新模組、重構、架構變更 | 建 ADR + PLAN.md → 實作 → distill | ADR + PLAN.md + 拓撲更新 |
 
 ```mermaid
 flowchart LR
@@ -135,8 +134,8 @@ flowchart LR
             Fix1["定位 + 修復"]
         end
 
-        subgraph Tier23["Tier 2/3: Medium ~ Full"]
-            ADR2["建立 ADR / PLAN.md"]
+        subgraph Tier2["Tier 2: Planned Task"]
+            ADR2["建立 ADR + PLAN.md"]
             Impl["實作"]
         end
 
@@ -303,9 +302,13 @@ graph LR
 📍 Task?
 > 新增 filter 功能，按 all/active/completed 篩選 todos
 
-→ Tier 2: Medium Task
+→ Tier 2: Planned Task
   影響: TodoList + 新增 useFilter hook + 新增 FilterBar component
   建立 ADR: docs/adr/001-todo-filter.md
+  建立 PLAN: docs/tmp/draft-PLAN.md
+
+  👉 想看這個模組在架構中的位置？執行 /ca-map TodoList
+  👉 想看全貌圖？執行 /ca-map
 
   ⚡ Auto-registered: FilterBar (components)
   ⚡ Auto-registered: useFilter (hooks)
@@ -376,7 +379,7 @@ nodes.yaml 的思路是**只給 agent 一張地圖，需要時再深入特定區
 | `docs/nodes.yaml` | 架構壓縮索引 | `/ca-scout` seed + `/ca-navigate` auto-register |
 | `docs/map/` | 架構拓撲視圖（受 [C4 model](https://c4model.com/) 啟發） | `/ca-navigate` 自動生成 |
 | `docs/map/gotchas.md` | Non-obvious 知識 | `/ca-close` 同步 + 手動 |
-| `docs/adr/` | 架構決策記錄 | Tier 2/3 完成時 |
+| `docs/adr/` | 架構決策記錄 | Tier 2 完成時 |
 
 ### 漸進成長
 

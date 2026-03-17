@@ -33,7 +33,8 @@ description: 查看架構拓撲圖（唯讀，不寫入任何檔案）
 3. **入邊（depended by）**：所有 `edges` 包含目標模組的其他模組
 
 生成規則：
-- 目標模組高亮：`style {node} fill:#ff6b6b,color:#fff`
+- **目標模組上色**：如果 `{module}` 存在於 nodes.yaml，使用 `style {node} fill:#ff6b6b,color:#fff` 標示
+- 如果 `{module}` 不在 nodes.yaml 中，提示使用者該模組尚未註冊，建議執行 `/ca-navigate {module}`
 - 出邊用實線箭頭：`target --> dep`
 - 入邊用反向實線箭頭：`upstream --> target`
 - 每個節點標注 group 和 comm（如有）

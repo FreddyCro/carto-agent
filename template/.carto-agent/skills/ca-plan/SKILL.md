@@ -1,5 +1,5 @@
 ---
-description: 統一工作流入口（Tier 1-3 routing）
+description: 統一工作流入口（Tier 1-2 routing）
 ---
 
 ## `/ca-plan` — 統一工作流入口
@@ -12,8 +12,8 @@ description: 統一工作流入口（Tier 1-3 routing）
 | --- | --- | --- |
 | `/ca-plan bug {id}` | 1 | Quick Fix，有 ticket |
 | `/ca-plan bug` | 1 | Quick Fix，無 ticket |
-| `/ca-plan {id}` | 2/3 | 規劃工作流，有 ticket |
-| `/ca-plan` | 2/3 | 規劃工作流，無 ticket |
+| `/ca-plan {id}` | 2 | 規劃工作流，有 ticket |
+| `/ca-plan` | 2 | 規劃工作流，無 ticket |
 
 ---
 
@@ -37,7 +37,11 @@ description: 統一工作流入口（Tier 1-3 routing）
     Edges: [{dependencies}]
     Refs:  [{references}]
   ```
-- 提示：`👉 需要焦點圖？執行 /ca-map {module}`
+- 提示：
+  ```
+  👉 想看這個模組在架構中的位置？執行 /ca-map {module}
+  👉 想看全貌圖？執行 /ca-map
+  ```
 
 ### Step 3: Tier Gate
 
@@ -45,8 +49,7 @@ description: 統一工作流入口（Tier 1-3 routing）
 | --- | --- |
 | 子指令為 `bug` | → Tier 1 |
 | 讀 issue 內容：單檔修改、明確 bug | → Tier 1（建議使用者確認） |
-| 跨多檔、新模組、內部重構 | → Tier 2（ADR-lite） |
-| 跨模組遷移、架構變更 | → Tier 3（完整 ADR + PLAN.md） |
+| 其他（跨多檔、新模組、重構、架構變更） | → Tier 2 |
 
 ### Step 4: 查歷史知識
 
@@ -61,15 +64,11 @@ description: 統一工作流入口（Tier 1-3 routing）
 - 根據使用者描述找到相關檔案
 - 開始修復，遵循 constitution file 中的 Coding Conventions
 
-**Tier 2 — ADR-lite**
+**Tier 2 — ADR + PLAN.md**
 - 建立 ADR（使用 `docs/adr/_TEMPLATE-ADR.md` 格式）
 - ADR 只記錄 issue 沒有的實作決策
-- 呈現影響的檔案、關鍵決策、風險，供使用者審閱
-
-**Tier 3 — 完整 ADR + PLAN.md**
-- 建完整 ADR（同 Tier 2）
 - 建立 `docs/tmp/{ticket-id}-PLAN.md`（使用 `docs/adr/_TEMPLATE-PLAN.md` 格式）
-- 呈現供審閱
+- 呈現影響的檔案、關鍵決策、風險，供使用者審閱
 
 ### Step 6: 實作
 
@@ -87,8 +86,8 @@ description: 統一工作流入口（Tier 1-3 routing）
 
 - 按 constitution file 中「收尾標準步驟」執行
 - Tier 1（可選）：non-obvious 發現加到 `docs/map/gotchas.md`
-- Tier 2/3（必要）：
+- Tier 2（必要）：
   - 檢查 ADR 是否需要根據實作結果更新
   - 更新 `docs/adr/INDEX.md`
   - 同步新 gotchas 到 `docs/map/gotchas.md`
-  - 更新 PLAN.md 中的 Verification checkbox（Tier 3）
+  - 更新 PLAN.md 中的 Verification checkbox
