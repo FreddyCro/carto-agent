@@ -49,8 +49,8 @@
 ### Tier 2: Planned Task
 
 觸發：跨多檔、新模組、重構、架構變更
-流程：建 ADR + PLAN.md → 實作 → distill
-完成時：更新 docs/adr/INDEX.md、同步 gotchas、更新架構文件
+流程：建 PLAN.md → 實作 → /ca-close 時決定是否寫 ADR
+完成時：同步 gotchas、更新架構文件、如有 ADR 則更新 nodes.yaml refs
 
 ### 收尾標準步驟（所有 Tier）
 

@@ -30,9 +30,9 @@ CartoAgent 透過架構拓撲圖視覺化專案結構，在開發前定位影響
 ```
 /ca-plan                                   /ca-close
   │                                            │
-  ├─ 架構定位：這次改的是哪個模組？               ├─ 沉澱：決策 → ADR, 踩坑 → gotchas
-  ├─ 查歷史：上次踩過什麼坑？(ADR + gotchas)     ├─ 生成：結構化 issue comment
-  ├─ Tier 分流：bug? 重構? 架構變更?             │
+  ├─ 架構定位：這次改的是哪個模組？               ├─ 詢問：這次值得寫 ADR 嗎？
+  ├─ 查歷史：上次踩過什麼坑？(ADR + gotchas)     ├─ 沉澱：決策 → ADR, 踩坑 → gotchas
+  ├─ Tier 分流：bug? 重構? 架構變更?             ├─ 生成：結構化 issue comment
   └─ 實作 + 驗證                               │
                                                ↓
                                     知識沉澱到 docs/adr/ + docs/map/gotchas.md
@@ -42,7 +42,7 @@ CartoAgent 透過架構拓撲圖視覺化專案結構，在開發前定位影響
                     下次 /ca-plan 自動讀取 ← ── 閉環
 ```
 
-`/ca-close` 不只是關 issue — 它把這次開發的決策和踩坑沉澱為 ADR 和 gotchas。下次 `/ca-plan` 會自動讀取這些知識，避免重蹈覆轍。**用得越多，agent 越懂你的專案。**
+`/ca-close` 不只是關 issue — 它會詢問你是否值得把這次的決策沉澱為 ADR，並自動同步踩坑記錄到 gotchas。下次 `/ca-plan` 會自動讀取這些知識，避免重蹈覆轍。**用得越多，agent 越懂你的專案。**
 
 ### Skills 是可編輯的 prompt
 
@@ -82,8 +82,7 @@ flowchart TB
         Navigate["/ca-navigate"]
         Map["/ca-map"]
 
-        Plan -->|架構定位| Nodes
-        Plan -->|查歷史| ADR["docs/adr/"]
+        Plan -->|架構定位 + 查 refs| Nodes
         Plan -->|查陷阱| Gotchas["docs/map/gotchas.md"]
         Navigate -->|auto-register| Nodes
         Navigate -->|同步| Topology["docs/map/ 拓撲圖"]
@@ -92,7 +91,7 @@ flowchart TB
 
     subgraph Finish["收尾"]
         CaClose["/ca-close"]
-        CaClose -->|distill| ADR
+        CaClose -->|詢問後 opt-in| ADR["docs/adr/"]
         CaClose -->|同步| Gotchas
     end
 
@@ -108,7 +107,7 @@ flowchart TB
 | **開始開發** | 接到 task / issue | `/ca-plan` | **主入口**。架構定位 → 查歷史 → Tier 分流 → 實作 → 驗證 |
 | **查架構** | 想看全貌或焦點圖 | `/ca-map` | 唯讀。隨時可用 |
 | **深入模組** | 想了解某模組的上下文 | `/ca-navigate` | 載入上下文 + auto-register |
-| **結束開發** | 開發完成 | `/ca-close` | **閉環關鍵**。distill 知識 + 生成 issue comment |
+| **結束開發** | 開發完成 | `/ca-close` | **閉環關鍵**。詢問是否寫 ADR + distill 知識 + 生成 issue comment |
 | **知識維護** | 想整理 ADR | `/ca-spec` | distill / review / check |
 | **新人導覽** | 新 session 或新人 | `/ca-onboard` | 專案全貌速覽 |
 
@@ -121,7 +120,7 @@ flowchart TB
 | Tier | 觸發條件 | 流程 | 文件產出 |
 |------|---------|------|---------|
 | **Tier 1: Quick Fix** | 單檔修改、bug 修復 | 修 → test → commit | 無（可選加 gotcha） |
-| **Tier 2: Planned Task** | 跨多檔、新模組、重構、架構變更 | 建 ADR + PLAN.md → 實作 → distill | ADR + PLAN.md + 拓撲更新 |
+| **Tier 2: Planned Task** | 跨多檔、新模組、重構、架構變更 | 建 PLAN.md → 實作 → /ca-close 時決定是否寫 ADR | PLAN.md + gotchas + ADR（opt-in） |
 
 ```mermaid
 flowchart LR
@@ -135,19 +134,26 @@ flowchart LR
         end
 
         subgraph Tier2["Tier 2: Planned Task"]
-            ADR2["建立 ADR + PLAN.md"]
+            Plan2["建立 PLAN.md"]
             Impl["實作"]
         end
 
         Verify["驗證"]
     end
 
-    Close["/ca-close"]
+    subgraph CaClose["/ca-close"]
+        AskADR{"值得寫 ADR？"}
+        ADR["建立 ADR"]
+        Skip["跳過"]
+        Gotchas["同步 gotchas"]
+    end
 
     Issue --> Gate
     Gate -->|"/ca-plan bug"| Fix1 --> Verify
-    Gate -->|"/ca-plan"| ADR2 --> Impl --> Verify
-    Verify --> Close
+    Gate -->|"/ca-plan"| Plan2 --> Impl --> Verify
+    Verify --> AskADR
+    AskADR -->|是| ADR --> Gotchas
+    AskADR -->|否| Skip --> Gotchas
 ```
 
 ---
@@ -304,7 +310,6 @@ graph LR
 
 → Tier 2: Planned Task
   影響: TodoList + 新增 useFilter hook + 新增 FilterBar component
-  建立 ADR: docs/adr/001-todo-filter.md
   建立 PLAN: docs/tmp/draft-PLAN.md
 
   👉 想看這個模組在架構中的位置？執行 /ca-map TodoList
@@ -319,9 +324,14 @@ graph LR
 ```
 > /ca-close
 
-→ Tier 2: distill 知識
-  ✅ ADR-001 status → Done
-  ✅ docs/adr/INDEX.md 已更新
+→ Tier 2: 分析變更
+  關鍵決策：新增 useFilter hook 管理篩選狀態，FilterBar 為純 UI 元件
+  ❓ 這次的決策值得寫 ADR 嗎？
+> 是
+
+  ✅ 建立 ADR: docs/adr/001-todo-filter.md
+  ✅ 更新 nodes.yaml refs
+  ✅ 同步 gotchas
   ✅ 生成 issue comment
 ```
 
@@ -339,7 +349,7 @@ graph LR
 
 🔍 Checking gotchas...
   ⚠️ #1: TodoItem onChange 需要從 useTodos 解構 toggleTodo  ← 上次沉澱的！
-🔍 Checking ADRs...
+🔍 Checking refs in nodes.yaml...
   📚 ADR-001: todo-filter — useFilter 管理篩選狀態         ← 上次沉澱的！
 
 → Tier 1: Quick Fix（有歷史知識輔助定位）
@@ -379,7 +389,7 @@ nodes.yaml 的思路是**只給 agent 一張地圖，需要時再深入特定區
 | `docs/nodes.yaml` | 架構壓縮索引 | `/ca-scout` seed + `/ca-navigate` auto-register |
 | `docs/map/` | 架構拓撲視圖（受 [C4 model](https://c4model.com/) 啟發） | `/ca-navigate` 自動生成 |
 | `docs/map/gotchas.md` | Non-obvious 知識 | `/ca-close` 同步 + 手動 |
-| `docs/adr/` | 架構決策記錄 | Tier 2 完成時 |
+| `docs/adr/` | 架構決策記錄 | `/ca-close` 時使用者決定是否建立 |
 
 ### 漸進成長
 

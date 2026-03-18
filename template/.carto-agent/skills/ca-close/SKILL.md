@@ -28,10 +28,17 @@ description: Issue 收尾 — distill 知識 + 生成結構化 issue comment
 ### Step 3: Tier Gate 判斷
 
 根據變更範圍判斷 Tier：
-- **Tier 1**（單檔修改、明確 bug）→ 跳過 distill，直接到步驟 5
-- **Tier 2**（跨多檔、新功能、重構、架構變更）→ 執行步驟 4 distill
+- **Tier 1**（單檔修改、明確 bug）→ 同步 gotchas（如有 non-obvious 發現），直接到步驟 5
+- **Tier 2**（跨多檔、新功能、重構、架構變更）→ 執行步驟 3b + 4
 
-### Step 4: Distill（Tier 2 限定）
+#### Step 3b: 詢問是否建立 ADR（Tier 2）
+
+- 摘要本次變更的關鍵決策，向使用者呈現
+- 詢問使用者：「這次的決策值得寫 ADR 嗎？」
+- 使用者說是 → 執行步驟 4 distill
+- 使用者說否 → 跳到步驟 4c 僅同步 gotchas
+
+### Step 4: Distill（Tier 2，使用者同意時）
 
 #### 4a. 建立 ADR
 
@@ -40,13 +47,14 @@ description: Issue 收尾 — distill 知識 + 生成結構化 issue comment
 - 從工作檔和 git diff 提煉：Context、Decision、Consequences、Gotchas
 - ADR 只記錄 issue 沒有的實作層知識
 
-#### 4b. 更新 INDEX
+#### 4b. 更新引用
 
-- 在 `docs/adr/INDEX.md` 新增此 ADR
+- 更新 `docs/nodes.yaml` 中相關模組的 `refs`，加入新 ADR 引用
+- 如 `docs/adr/INDEX.md` 存在，順便更新（非必要）
 
 #### 4c. 同步 Gotchas
 
-- 如 ADR 中有 Gotchas，同步到 `docs/map/gotchas.md`
+- 如有 non-obvious 發現或 ADR 中有 Gotchas，同步到 `docs/map/gotchas.md`
 
 ### Step 5: 讀取 Issue Template（如有）
 

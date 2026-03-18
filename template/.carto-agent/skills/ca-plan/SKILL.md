@@ -53,9 +53,9 @@ description: 統一工作流入口（Tier 1-2 routing）
 
 ### Step 4: 查歷史知識
 
-- 讀取 `docs/adr/INDEX.md`，找相關模組的歷史 ADR
+- 讀取 `docs/nodes.yaml` 中目標模組的 `refs`，找相關 ADR
+- 如 refs 有 ADR 引用，讀取對應 ADR 檔案的 Decisions 和 Gotchas
 - 讀取 `docs/map/gotchas.md`，檢查是否有已知陷阱
-- 如果有相關 ADR，讀取其 Decisions 和 Gotchas
 - 如有 `docs/map/` 拓撲文件，查找相關模組上下文
 
 ### Step 5: 規劃/定位（依 Tier 分流）
@@ -64,9 +64,7 @@ description: 統一工作流入口（Tier 1-2 routing）
 - 根據使用者描述找到相關檔案
 - 開始修復，遵循 constitution file 中的 Coding Conventions
 
-**Tier 2 — ADR + PLAN.md**
-- 建立 ADR（使用 `docs/adr/_TEMPLATE-ADR.md` 格式）
-- ADR 只記錄 issue 沒有的實作決策
+**Tier 2 — PLAN.md**
 - 建立 `docs/tmp/{ticket-id}-PLAN.md`（使用 `docs/adr/_TEMPLATE-PLAN.md` 格式）
 - 呈現影響的檔案、關鍵決策、風險，供使用者審閱
 
@@ -86,8 +84,6 @@ description: 統一工作流入口（Tier 1-2 routing）
 
 - 按 constitution file 中「收尾標準步驟」執行
 - Tier 1（可選）：non-obvious 發現加到 `docs/map/gotchas.md`
-- Tier 2（必要）：
-  - 檢查 ADR 是否需要根據實作結果更新
-  - 更新 `docs/adr/INDEX.md`
+- Tier 2：
   - 同步新 gotchas 到 `docs/map/gotchas.md`
   - 更新 PLAN.md 中的 Verification checkbox
