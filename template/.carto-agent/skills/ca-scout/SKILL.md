@@ -25,8 +25,13 @@ description: 偵察 codebase，建立 conventions 並 seed 代表性節點到 no
    - `cursor` → `.cursorrules`
    - `windsurf` → `.windsurfrules`
    - `generic` → `AGENT.md`
-3. 生成 constitution file（從 config 填入模板，包含 Project Identity / Dev Commands / Coding Conventions / Workflow Tiers / Knowledge Rules / Key Paths）
-4. 如果是 `claude-code`，將 `.carto-agent/skills/` 下的 skills 複製到 `.claude/skills/`（Claude Code 要求 skills 在 `.claude/skills/` 下）
+3. 生成 constitution file（從 config 填入模板，包含 Project Identity / Coding Conventions / Workflow Tiers / Key Paths 指引）
+   - Dev Commands：如有 `package.json`，只寫 `見 package.json scripts`；無則展開寫
+   - Knowledge Rules：直接內嵌表格（僅 3 行，不值得外拆檔案）
+   - Key Paths：模組/共用路徑引用 `carto-agent.config.yaml key_paths`，只列 docs 相關固定路徑
+4. 如果是 `claude-code`：
+   - 將 `.carto-agent/skills/` 下的 skills 複製到 `.claude/skills/`
+   - 確認 `.carto-agent/hooks/` 下的 scripts 有執行權限（`chmod +x`）
 
 ### Step 1: Preflight
 

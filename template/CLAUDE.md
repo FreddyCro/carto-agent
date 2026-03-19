@@ -3,6 +3,10 @@
 > CartoAgent constitution file（由 `/ca-scout` 從 `carto-agent.config.yaml` 生成）。
 > 每次 session 自動載入。手動修改此檔案後，建議同步更新 config。
 
+## Session Start
+
+執行 `bash .carto-agent/hooks/session-check.sh` 檢查未關閉工作檔和 nodes.yaml 是否過時。
+
 ## Language
 
 {繁體中文和英文 / English only / etc.}
@@ -17,11 +21,7 @@
 
 ## Dev Commands
 
-- **Install**: `{pnpm install / npm install / etc.}`
-- **Dev**: `{pnpm dev / npm run dev / etc.}`
-- **Test**: `{pnpm test / npm test / etc.}`
-- **Lint**: `{pnpm lint / npm run lint / etc.}`
-- **Build**: `{pnpm build / npm run build / etc.}`
+見 `carto-agent.config.yaml` commands 區塊或 `package.json` scripts。
 
 ## Issue Tracking
 
@@ -67,8 +67,8 @@
 
 ## Key Paths
 
-- 主要模組: {src/packages/, src/modules/, packages/, etc.}
-- 共用工具: {src/utils/, shared/, lib/, etc.}
+模組路徑和共用工具路徑見 `carto-agent.config.yaml` key_paths 區塊。
+
 - 架構文件: docs/
 - 決策記錄: docs/adr/
 - 拓撲地圖: docs/map/

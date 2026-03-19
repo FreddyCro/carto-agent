@@ -408,14 +408,18 @@ carto-agent/
 ├── template/                        # 通用 template
 │   ├── carto-agent.config.yaml      # 專案設定模板
 │   ├── CLAUDE.md                    # Constitution file 模板（Claude Code）
-│   ├── .carto-agent/skills/         # 7 個 ca-* skills（可編輯的 markdown）
-│   │   ├── ca-scout/SKILL.md
-│   │   ├── ca-navigate/SKILL.md
-│   │   ├── ca-map/SKILL.md
-│   │   ├── ca-plan/SKILL.md
-│   │   ├── ca-spec/SKILL.md
-│   │   ├── ca-close/SKILL.md
-│   │   └── ca-onboard/SKILL.md
+│   ├── .carto-agent/
+│   │   ├── skills/                  # 7 個 ca-* skills（可編輯的 markdown）
+│   │   │   ├── ca-scout/SKILL.md
+│   │   │   ├── ca-navigate/SKILL.md
+│   │   │   ├── ca-map/SKILL.md
+│   │   │   ├── ca-plan/SKILL.md
+│   │   │   ├── ca-spec/SKILL.md
+│   │   │   ├── ca-close/SKILL.md
+│   │   │   └── ca-onboard/SKILL.md
+│   │   └── hooks/                   # 自動化 scripts（零 context 成本）
+│   │       ├── session-check.sh     # 未關閉工作檔 + nodes.yaml 過時檢查
+│   │       └── drift-check.sh       # 模組漂移偵測
 │   └── docs/                        # 知識管理骨架
 │       ├── nodes.yaml
 │       ├── map/gotchas.md
