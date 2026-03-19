@@ -54,8 +54,31 @@
 
 ### 收尾標準步驟（所有 Tier）
 
-1. 提醒使用者 commit 並提供建議的 commit message（不自行執行 git commit）
+1. 依 Git Automation 設定執行 commit（見下方）
 2. 如有關聯的 issue，提醒使用者執行 /ca-close {id}
+
+## Git Automation
+
+- **Commit**: {suggest-only / auto}
+- **Branch**: {manual / auto}
+
+| 模式 | 說明 |
+|------|------|
+| suggest-only | 提供建議的 commit message，由使用者自行執行 |
+| auto | agent 直接執行 git commit（使用建議的 message） |
+| manual | agent 不操作，由使用者自行處理 |
+
+## Review Checklist
+
+`/ca-close` 時自動檢查的項目。留空則跳過 review（回報「執行了 0 項檢查」）。
+
+<!--
+範例：取消註解並自訂你的 review 項目
+- 命名是否遵循 Coding Conventions
+- 新增的跨模組依賴是否反映在 nodes.yaml
+- 是否有未處理的 TODO / FIXME
+- 錯誤處理是否完整
+-->
 
 ## Knowledge Rules — Single Source of Truth
 

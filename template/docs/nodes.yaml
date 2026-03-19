@@ -1,38 +1,15 @@
 # CartoAgent Node Registry
 # 由 /ca-scout 初始化，/ca-navigate 自動擴充
+# 完整 schema 見 README.md
 #
-# ─── Conventions Schema ───
-# conventions:                           # 由 /ca-scout 偵察後寫入（選填，無則 /ca-navigate 會提示先執行 /ca-scout）
-#   component_patterns:                  # [必填] glob 陣列，模組所在的目錄 pattern
-#     - "src/components/**"
-#     - "src/pages/**"
-#   infra_patterns:                      # [選填] glob 陣列，基礎設施檔案 pattern
-#     - "docker-compose*.yml"
-#     - "nginx/**"
-#   comm_signals:                        # [選填] 通訊機制偵測規則
-#     - detect: {偵測方式}               #   e.g. "import pattern", "file convention"
-#       pattern: {偵測 pattern}          #   e.g. "fetch|axios", "*.api.ts"
-#   adr_path: docs/adr/                  # [必填] ADR 文件目錄
-#   adr_index: docs/adr/INDEX.md         # [必填] ADR 索引檔
-#   groups:                              # [必填] 可用的 group 分類
-#     - frontend
-#     - backend
-#     - shared
-#     - infra
-#
-# ─── Node Schema ───
+# conventions:  由 /ca-scout 偵察後寫入
 # nodes:
-#   - name: {module-name}               # [必填] 模組唯一識別名
-#     path: {relative-path}             # [必填] 相對於 repo root 的路徑
-#     group: {group-name}               # [必填] 所屬分組，值須為 conventions.groups 中之一
-#     comm:                             # [選填] 通訊機制列表
-#       - type: {comm-type}             #   [必填] import | rest-api | workspace-dep | event | proxy
-#         target: {target-module}       #   [必填] 通訊目標模組名
-#         description: {描述}           #   [選填] 通訊用途說明
-#     edges:                            # [選填] 依賴的其他模組名稱列表
-#       - {dependency-module-name}
-#     refs:                             # [選填] 相關參考檔案路徑列表（ADR、文件等）
-#       - {relative-path}
+#   - name:     [必填] 模組名
+#     path:     [必填] 相對路徑
+#     group:    [必填] 分組（須為 conventions.groups 之一）
+#     comm:     [選填] 通訊機制（type / target / description）
+#     edges:    [選填] 依賴模組列表
+#     refs:     [選填] 相關 ADR / 文件路徑
 
 version: '1.0'
 project: '{project-name}'

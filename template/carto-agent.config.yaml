@@ -31,6 +31,10 @@ conventions:
   branch_naming: "{id}-{slug}"         # e.g. feature/{id}-{slug}
   file_naming: kebab-case              # kebab-case / camelCase / PascalCase
 
+git_automation:
+  commit: suggest-only                 # suggest-only / auto
+  branch: manual                       # manual / auto
+
 key_paths:
   modules: []                          # e.g. [src/packages/, src/modules/]
   shared: []                           # e.g. [src/utils/, shared/]

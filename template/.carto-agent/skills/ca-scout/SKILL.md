@@ -31,6 +31,7 @@ description: 偵察 codebase，建立 conventions 並 seed 代表性節點到 no
    - Key Paths：模組/共用路徑引用 `carto-agent.config.yaml key_paths`，只列 docs 相關固定路徑
 4. 如果是 `claude-code`：
    - 將 `.carto-agent/skills/` 下的 skills 複製到 `.claude/skills/`
+   - 將 `.carto-agent/agents/` 下的 agents 複製到 `.claude/agents/`
    - 確認 `.carto-agent/hooks/` 下的 scripts 有執行權限（`chmod +x`）
 
 ### Step 1: Preflight

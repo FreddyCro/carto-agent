@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# ──────────────────────────────────────────────
+# write-guard.sh — 選用的寫入路徑護欄
+# ──────────────────────────────────────────────
+# 用途：在 agent 寫入檔案前檢查目標路徑，阻擋對敏感目錄的修改。
+#
+# 啟用方式：
+# 1. 複製此檔案並移除 .example 副檔名：
+#    cp .carto-agent/hooks/write-guard.sh.example .carto-agent/hooks/write-guard.sh
+#    chmod +x .carto-agent/hooks/write-guard.sh
+#
+# 2. 編輯下方 BLOCKED_PATTERNS，加入你的專案要保護的路徑
+#
+# 3. 在 .claude/settings.json 加入：
+#    "PreToolUse": [
+#      {
+#        "matcher": "Write|Edit",
+#        "command": "bash .carto-agent/hooks/write-guard.sh"
+#      }
+#    ]
+# ──────────────────────────────────────────────
+
+# 從 stdin 讀取 tool input（Claude Code 會傳入 JSON）
+INPUT=$(cat)
+FILE_PATH=$(echo "$INPUT" | grep -o '"file_path"[[:space:]]*:[[:space:]]*"[^"]*"' | head -1 | sed 's/.*"file_path"[[:space:]]*:[[:space:]]*"//;s/"$//')
+
+# 如果無法解析路徑，放行
+if [ -z "$FILE_PATH" ]; then
+  exit 0
+fi
+
+# ─── 在此自訂要阻擋的路徑 pattern ───
+BLOCKED_PATTERNS=(
+  "node_modules/"
+  ".git/"
+  "dist/"
+  "build/"
+  ".env"
+  # 加入你的專案特定路徑，例如：
+  # "secrets/"
+  # "vendor/"
+)
+
+for pattern in "${BLOCKED_PATTERNS[@]}"; do
+  if [[ "$FILE_PATH" == *"$pattern"* ]]; then
+    echo "BLOCKED: 禁止寫入 $FILE_PATH（匹配 $pattern）"
+    exit 2
+  fi
+done

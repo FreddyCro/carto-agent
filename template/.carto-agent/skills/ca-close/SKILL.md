@@ -21,9 +21,21 @@ description: Issue 收尾 — distill 知識 + 生成結構化 issue comment
 
 ### Step 2: 分析變更
 
-- 執行 `git diff master...HEAD --stat` 查看變更檔案統計
-- 執行 `git log master..HEAD --oneline` 查看 commit 歷史
-- 分析變更涉及的模組和 scope
+向使用者回報：「正在委託 @ca-explorer 分析變更...」
+
+委託 `@ca-explorer` subagent 分析（避免 diff 輸出佔滿主 context）：
+
+1. 向 `@ca-explorer` 發送：分析 `git diff master...HEAD --stat` 和 `git log master..HEAD --oneline`，回傳變更摘要（涉及模組、scope、檔案數）
+2. subagent 回傳精簡的變更摘要，主 context 只保留結論
+3. 向使用者回報：「@ca-explorer 分析完成」+ 變更摘要
+
+### Step 2b: 品質快照
+
+執行 constitution file 中定義的 test 和 lint 指令，記錄當下結果：
+- test：pass / fail（fail 時附失敗摘要）
+- lint：clean / warnings（附數量）
+
+結果自動填入 Step 6「測試結果」section。如果 test fail，警告使用者但不阻斷流程。
 
 ### Step 3: Tier Gate 判斷
 
@@ -55,6 +67,17 @@ description: Issue 收尾 — distill 知識 + 生成結構化 issue comment
 #### 4c. 同步 Gotchas
 
 - 如有 non-obvious 發現或 ADR 中有 Gotchas，同步到 `docs/map/gotchas.md`
+
+### Step 4d: Review Checklist
+
+讀取 constitution file 的「Review Checklist」section：
+- 如果 checklist 為空（無項目或全部被註解）→ 回報「執行了 0 項檢查」，繼續
+- 如果有定義項目 → 委託 `@ca-explorer` 逐項檢查：
+  1. 向使用者回報：「正在執行 N 項 review 檢查...」
+  2. 向 `@ca-explorer` 發送：review checklist + `git diff master...HEAD`
+  3. @ca-explorer 回傳每項的 pass / warning / critical
+  4. 向使用者回報結果：「Review 完成：N pass / N warning / N critical」
+  5. 如有 critical → 警告使用者，建議修正後再繼續（不阻斷）
 
 ### Step 5: 讀取 Issue Template（如有）
 

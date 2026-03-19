@@ -381,6 +381,41 @@ graph LR
 
 nodes.yaml 的思路是**只給 agent 一張地圖，需要時再深入特定區域**，而非把整個 codebase 壓成一個大 context 餵給 AI。
 
+<details>
+<summary>nodes.yaml 完整 Schema</summary>
+
+```yaml
+conventions:
+  component_patterns:        # [必填] glob 陣列，模組目錄 pattern
+    - "src/components/**"
+  infra_patterns:            # [選填] 基礎設施檔案 pattern
+    - "docker-compose*.yml"
+  comm_signals:              # [選填] 通訊機制偵測規則
+    - detect: "import pattern"
+      pattern: "fetch|axios"
+  adr_path: docs/adr/        # [必填]
+  adr_index: docs/adr/INDEX.md  # [必填]
+  groups:                    # [必填] 可用分組
+    - frontend
+    - backend
+    - shared
+
+nodes:
+  - name: module-name        # [必填] 唯一識別名
+    path: src/modules/foo/   # [必填] 相對路徑
+    group: frontend          # [必填] 須為 groups 之一
+    comm:                    # [選填]
+      - type: rest-api       #   import | rest-api | workspace-dep | event | proxy
+        target: api-gateway
+        description: "呼叫後端 API"
+    edges:                   # [選填] 依賴模組列表
+      - shared-utils
+    refs:                    # [選填] 相關 ADR / 文件
+      - docs/adr/001-foo.md
+```
+
+</details>
+
 ### 知識檔案一覽
 
 | 文件 | 用途 | 維護方式 |
@@ -417,15 +452,38 @@ carto-agent/
 │   │   │   ├── ca-spec/SKILL.md
 │   │   │   ├── ca-close/SKILL.md
 │   │   │   └── ca-onboard/SKILL.md
-│   │   └── hooks/                   # 自動化 scripts（零 context 成本）
-│   │       ├── session-check.sh     # 未關閉工作檔 + nodes.yaml 過時檢查
-│   │       └── drift-check.sh       # 模組漂移偵測
+│   │   ├── hooks/                   # 自動化 scripts（零 context 成本）
+│   │   │   ├── session-check.sh     # Stop hook：未關閉工作檔 + nodes.yaml 過時檢查
+│   │   │   └── write-guard.sh.example  # 選用：寫入路徑護欄（PreToolUse）
+│   │   └── agents/                  # Subagent 定義（context 隔離）
+│   │       ├── ca-explorer.md       # READS：唯讀架構查詢（haiku 模型）
+│   │       └── ca-worker.md         # WRITES：Tier 2 實作委託（worktree 隔離）
 │   └── docs/                        # 知識管理骨架
 │       ├── nodes.yaml
 │       ├── map/gotchas.md
 │       └── adr/
 └── docs/                            # 設計文件、分析筆記
 ```
+
+## Subagent 架構
+
+CartoAgent 採用 Orchestrator-Worker 模式，從 SDLC 角色分析得出 **2 個 subagent** 為最小最適配置：
+
+| 角色 | Agent | 職責 | 模型 |
+|------|-------|------|------|
+| **DECIDES** | 主代理 | 理解需求、規劃、決策、與使用者對話 | 主對話模型 |
+| **READS** | @ca-explorer | 架構查詢、歷史知識、drift 偵測 | haiku（低成本、高頻） |
+| **WRITES** | @ca-worker | Tier 2 實作、test、lint | 主對話模型（worktree 隔離） |
+
+```
+使用者 ←→ 主代理 (DECIDES)
+              │
+              ├── @ca-explorer (READS) ── nodes.yaml / ADR / gotchas
+              │
+              └── @ca-worker (WRITES) ── worktree 隔離實作
+```
+
+Tier 1（Quick Fix）由主代理直接修，不經 ca-worker — 單檔修改的 context 消耗小，派 subagent 的啟動延遲反而更慢。
 
 ## 設計原則
 
@@ -436,3 +494,4 @@ carto-agent/
 5. **漸進成長** — 從偵察開始，隨使用自然擴充
 6. **知識閉環** — `/ca-close` 沉澱的知識，下次 `/ca-plan` 自動讀取
 7. **Tier 分流** — 小 bug 不需要 ADR，大功能不會跳過規劃
+8. **Context 保護** — 主代理的 context 是最珍貴的資源，實作委託 subagent
