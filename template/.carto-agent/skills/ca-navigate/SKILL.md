@@ -90,6 +90,19 @@ description: 載入模組完整開發上下文（路由 + ADR + 焦點圖）+ au
 3. 覆寫 `docs/nodes.yaml`
 4. 重新產生所有拓撲圖
 
+### Staleness Hint
+
+每次執行 `/ca-navigate`（任何模式）時，進行輕量過時檢查：
+
+1. 執行 `git rev-list --count HEAD` 取得目前 commit 總數
+2. 檢查 `docs/nodes.yaml` 最後修改的 commit：`git log -1 --format="%H" -- docs/nodes.yaml`
+3. 計算距離：`git rev-list --count {last-modify-commit}..HEAD`
+4. 如距離 **≥ 50 commits** → 在輸出末尾加上提示：
+   ```
+   💡 nodes.yaml 已有 {N} 個 commit 未更新，建議執行 /ca-navigate refresh 重新偵察
+   ```
+5. 如距離 < 50 → 靜默跳過
+
 ---
 
 ### Node Schema

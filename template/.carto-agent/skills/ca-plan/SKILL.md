@@ -29,6 +29,14 @@ description: 統一工作流入口（Tier 1-2 routing）
 - 從 issue 描述或 branch 名稱辨識目標模組
 - 讀取 `docs/nodes.yaml`，查找該模組
 - 如不存在 → 依 `/ca-navigate` auto-register 邏輯註冊
+- **Drift Check**：讀取 constitution file 中的 `key_paths.modules`，用 glob 掃描實際目錄，與 nodes.yaml 已登記的模組比對：
+  - 如有 **3 個以上未登記模組** → 輸出提醒：
+    ```
+    ⚠️ Drift detected: {N} 個模組尚未登記在 nodes.yaml
+      {列出未登記模組名稱，最多顯示 5 個}
+      👉 建議執行 /ca-navigate refresh 重新偵察
+    ```
+  - 如差異 ≤ 3 → 靜默跳過，不打擾使用者
 - 輸出結構化摘要：
   ```
   📍 {module}
