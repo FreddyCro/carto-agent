@@ -6,6 +6,20 @@ Format based on [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## [0.4.0] - 2026-03-20
+
+### Workflow 狀態列 + Inspirations
+
+### Added
+- `/ca-plan` Workflow 狀態列 — 每個 Step 轉換時輸出一行 progress bar（✅/🔄/⏳），subagent 互動時加一行細節
+- README Inspirations section — 記錄 CA 的設計靈感來源（C4 Model、Spec Kit、ADR、xyflow、Orchestrator-Worker、Unix Philosophy、Mermaid、Claude Code）
+
+### 設計決策
+- **Terminal 狀態列 > Mermaid 寫檔** — CA workflow 是線性序列，不需要複雜的流程圖；Terminal 直接印零 I/O 成本，使用者不需開 Markdown Preview
+- **不加獨立 subagent** — 狀態回報是 DECIDES（主代理）的附帶行為，不需要第 3 個 subagent
+
+---
+
 ## [0.3.0] - 2026-03-19
 
 ### 輕量化 + 現代化平衡
