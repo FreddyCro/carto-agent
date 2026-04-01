@@ -56,6 +56,7 @@
 
 1. 依 Git Automation 設定執行 commit（見下方）
 2. 如有關聯的 issue，提醒使用者執行 /ca-close {id}
+3. 提醒使用者回答部署前三問（詳見 `/ca-plan` Step 5b、7b 和 `/ca-close` Step 7b）
 
 ## Git Automation
 

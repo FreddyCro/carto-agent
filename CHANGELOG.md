@@ -6,6 +6,28 @@ Format based on [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## [0.5.0] - 2026-04-01
+
+### Human Checkpoint: 部署前三問
+
+AI Agent 產出的程式碼能通過 CI，但「綠色」不代表「安全」。嵌入三個 mental checkpoint 到工作流的自然停頓點，確保人類判斷介入。
+
+參考：[Agent Responsibly (Vercel Blog)](https://vercel.com/blog/agent-responsibly)
+
+### Added
+- `/ca-plan` Step 5b — Q1: 我理解這段程式碼嗎？（派工前攔截）
+- `/ca-plan` Step 7b — Q2: 風險在哪？（驗證通過後攔截）
+- `/ca-close` Step 7b — Q3: 我願意為它負責嗎？（commit 建議前攔截）
+- README「Human Checkpoint: 部署前三問」section
+- Constitution file 收尾步驟補充三問提醒
+
+### 設計決策
+- **Mental checkpoint > 自動化 gate** — 三問的價值在人類思考，強制回答會退化成 rubber stamp
+- **嵌在既有停頓點 > 新增步驟** — 不額外加流程，在已有的 plan review / verification / close 加上意識提醒
+- **不可逆程度遞增** — Q1（改文字） → Q2（改 code） → Q3（影響團隊），對應越來越難回頭的動作
+
+---
+
 ## [0.4.0] - 2026-03-20
 
 ### Workflow 狀態列 + Inspirations

@@ -120,6 +120,25 @@ description: Issue 收尾 — distill 知識 + 生成結構化 issue comment
 - 如有建議，向使用者提出
 - 沒有發現就跳過
 
+### Step 7b: Human Checkpoint — Q3: 我願意為它負責嗎？
+
+> commit 建議前攔截 — 過了這個點就影響團隊：MR review、CI 資源、branch。
+
+向使用者提示：
+
+```
+🔐 Q3: 你願意為這段 code 負責嗎？
+
+Push 後就進入 CI pipeline，對團隊宣告「我背書」。
+
+問自己:
+  - 如果上線後出問題，我知道從哪裡開始 debug 嗎？
+  - 這段 code 的 rollback 計畫是什麼？
+  - 我能跟其他工程師解釋這個改動嗎？
+
+→ 如果答案是「不確定」→ 退回 Q1，重新理解。
+```
+
 ### Step 8: 收尾
 
 - 按 constitution file 收尾標準步驟執行

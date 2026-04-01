@@ -158,6 +158,24 @@ flowchart LR
 
 ---
 
+## Human Checkpoint: 部署前三問
+
+AI Agent 產出的程式碼能通過 CI，但**「綠色」不代表「安全」**。Agent 不知道你的 prod 環境、基礎設施限制、和團隊的 operational knowledge。
+
+以下三個問題嵌入在工作流的自然停頓點，確保人類判斷介入：
+
+| 時機 | Skill 嵌入點 | 問題 | 攔截什麼 |
+|------|-------------|------|----------|
+| 規劃完成、實作前 | `/ca-plan` Step 5b | **Q1: 我理解這段程式碼嗎？** | 知識盲區 — 不懂的 code 不該進 repo |
+| 驗證通過、commit 前 | `/ca-plan` Step 7b | **Q2: 風險在哪？** | prod 環境差異 — 測試環境看不到的風險 |
+| 收尾完成、push 前 | `/ca-close` Step 7b | **Q3: 我願意為它負責嗎？** | 當責缺口 — 無法 debug 的 code 不該上線 |
+
+這是 **mental checkpoint，不是自動化 gate** — 不增加新工具，不加到 CI，價值在於人類思考而非流程強制。
+
+> 參考：[Agent Responsibly](https://vercel.com/blog/agent-responsibly) — 「依賴」vs「善用」：依賴是測試過就上；善用是我完全理解這段 code 在 prod 會怎麼跑。
+
+---
+
 ## 安裝
 
 ### 1. 複製 template
@@ -508,3 +526,4 @@ CartoAgent 的設計受到以下概念啟發：
 - **[Orchestrator-Worker](https://learn.microsoft.com/en-us/azure/architecture/patterns/)** — 多代理分工模式（DECIDES / READS / WRITES）
 - **[Mermaid](https://mermaid.js.org/)** — 零依賴的 Markdown 原生視覺化
 - **[Claude Code](https://docs.anthropic.com/en/docs/claude-code)** — Skills、Hooks、Subagents、MCP 原語
+- **[Agent Responsibly](https://vercel.com/blog/agent-responsibly)** — 部署前三問：Human Checkpoint 嵌入 AI 工作流

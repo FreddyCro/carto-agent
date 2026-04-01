@@ -92,6 +92,29 @@ subagent 會回傳結構化摘要，直接輸出給使用者：
 - 建立 `docs/tmp/{ticket-id}-PLAN.md`（使用 `docs/adr/_TEMPLATE-PLAN.md` 格式）
 - 呈現影響的檔案、關鍵決策、風險，供使用者審閱
 
+### Step 5b: Human Checkpoint — Q1: 我理解這段程式碼嗎？
+
+> 派工前攔截 — 攔截成本最低的點，改方向只是改文字。
+
+向使用者提示：
+
+```
+🧠 Q1: 你理解這段規劃嗎？
+
+Tier 2: 讀 PLAN.md，能解釋每個決策的 why 嗎？
+  - 為什麼選這個方案而不是替代方案？
+  - Agent 引入了哪些你不熟悉的 pattern？
+  - 這個改動跟現有架構如何互動？
+
+Tier 1: 讀修復方向，能解釋改了什麼、為什麼嗎？
+  - 這個 fix 的 side effect 是什麼？
+  - 為什麼改這裡就能修好？
+
+→ 如果無法解釋，退回重新理解再繼續。
+```
+
+等待使用者確認後再進入實作。
+
 ### Step 6: 實作（依 Tier 分流）
 
 **Tier 1 — 主代理直接修**
@@ -143,6 +166,30 @@ subagent 會回傳結構化摘要，直接輸出給使用者：
 - 如 ca-worker 回報 pass，主代理做 sanity check（抽檢關鍵檔案）
 - 如修改涉及互動行為且有 e2e 指令，提醒使用者執行
 - 列出建議的手動驗證案例
+
+### Step 7b: Human Checkpoint — Q2: 風險在哪？
+
+> 驗證通過後攔截 — 最後的低成本修正機會，commit 前改 code 很容易。
+
+自動驗證都過了，向使用者提示評估 prod 風險：
+
+```
+⚠️ Q2: 風險在哪？
+
+環境差異:
+  - 這段 code 在 prod 環境會怎麼跑？
+  - 有沒有 CI 測不到的環境因素（browser / CDN / 第三方整合）？
+
+Agent 假設:
+  - Agent 是否假設了某些條件（同步執行、特定 API、特定版本）？
+  - 是否有未驗證的隱含假設？
+
+爆炸半徑:
+  - 只影響單一模組？還是跨模組連鎖（檢查 nodes.yaml edges）？
+  - 改了 shared util？downstream 影響範圍？
+
+→ 如果風險值得記錄 → /ca-close 時 opt-in ADR
+```
 
 ### Step 8: 收尾
 
