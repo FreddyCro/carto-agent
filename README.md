@@ -381,3 +381,5 @@ CartoAgent 的設計受到以下概念啟發：
 - **[Mermaid](https://mermaid.js.org/)** — 零依賴的 Markdown 原生視覺化
 - **[Claude Code](https://docs.anthropic.com/en/docs/claude-code)** — Skills、Hooks、Subagents、MCP 原語
 - **[Agent Responsibly](https://vercel.com/blog/agent-responsibly)** — 部署前三問：Human Checkpoint 嵌入 AI 工作流
+- **[Harness Engineering](https://openai.com/zh-Hant/index/harness-engineering/)** — OpenAI 對 AI agent harness 工程設計的實踐分享
+- **[Harness Design for Long-Running Apps](https://www.anthropic.com/engineering/harness-design-long-running-apps)** — 分離 generator / evaluator agent 角色，讓 Claude 在多小時 coding session 中穩定產出高品質成果
