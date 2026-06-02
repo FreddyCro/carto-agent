@@ -1,5 +1,7 @@
 ---
+name: ca-spec
 description: ADR 生命週期管理（distill / review / check）
+allowed-tools: Read, Glob, Grep, Write, Edit
 ---
 
 ## `/ca-spec` — ADR 生命週期管理

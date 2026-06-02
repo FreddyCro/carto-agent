@@ -1,5 +1,7 @@
 ---
+name: ca-navigate
 description: 載入模組完整開發上下文（路由 + ADR + 焦點圖）+ auto-register + 同步拓撲圖
+allowed-tools: Read, Glob, Grep, Write, Edit
 ---
 
 ## `/ca-navigate` — 節點上下文載入 + 拓撲同步

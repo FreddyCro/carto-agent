@@ -1,5 +1,7 @@
 ---
+name: ca-map
 description: 查看架構拓撲圖（唯讀，不寫入任何檔案）
+allowed-tools: Read, Glob, Grep
 ---
 
 ## `/ca-map` — 架構拓撲圖查看

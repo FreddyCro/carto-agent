@@ -1,5 +1,7 @@
 ---
+name: ca-plan
 description: 統一工作流入口（Tier 1-2 routing）
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, TodoWrite
 ---
 
 ## `/ca-plan` — 統一工作流入口

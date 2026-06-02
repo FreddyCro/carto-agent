@@ -1,5 +1,7 @@
 ---
+name: ca-onboard
 description: 專案導覽 — 為新 session 或新人提供架構摘要
+allowed-tools: Read, Glob, Grep
 ---
 
 ## `/ca-onboard` — 專案導覽

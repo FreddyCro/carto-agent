@@ -142,8 +142,10 @@ flowchart LR
     end
 
     subgraph CaClose["/ca-close"]
+        Review["Code Review<br/>(T2 強制 / T1 opt-in)"]
+        MustFix{"🔴 必修?"}
         AskADR{"值得寫 ADR？"}
-        ADR["建立 ADR"]
+        ADR["建立 ADR<br/>(吸收 🟡🟢 findings)"]
         Skip["跳過"]
         Gotchas["同步 gotchas"]
     end
@@ -151,7 +153,10 @@ flowchart LR
     Issue --> Gate
     Gate -->|"/ca-plan bug"| Fix1 --> Verify
     Gate -->|"/ca-plan"| Plan2 --> Impl --> Verify
-    Verify --> AskADR
+    Verify --> Review
+    Review --> MustFix
+    MustFix -->|是| Impl
+    MustFix -->|否| AskADR
     AskADR -->|是| ADR --> Gotchas
     AskADR -->|否| Skip --> Gotchas
 ```

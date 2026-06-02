@@ -1,5 +1,7 @@
 ---
+name: ca-scout
 description: 偵察 codebase，建立 conventions 並 seed 代表性節點到 nodes.yaml（CartoAgent 初始化入口）
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash
 ---
 
 ## `/ca-scout` — CartoAgent 偵察 + 初始化

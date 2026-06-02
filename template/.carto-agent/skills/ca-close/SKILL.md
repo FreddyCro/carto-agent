@@ -1,5 +1,7 @@
 ---
+name: ca-close
 description: Issue 收尾 — distill 知識 + 生成結構化 issue comment
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash
 ---
 
 ## `/ca-close` — Issue 收尾
@@ -40,10 +42,51 @@ description: Issue 收尾 — distill 知識 + 生成結構化 issue comment
 ### Step 3: Tier Gate 判斷
 
 根據變更範圍判斷 Tier：
-- **Tier 1**（單檔修改、明確 bug）→ 同步 gotchas（如有 non-obvious 發現），直接到步驟 5
-- **Tier 2**（跨多檔、新功能、重構、架構變更）→ 執行步驟 3b + 4
+- **Tier 1**（單檔修改、明確 bug）→ 詢問是否做 code review（步驟 3b，opt-in）→ 同步 gotchas（如有 non-obvious 發現），直接到步驟 5
+- **Tier 2**（跨多檔、新功能、重構、架構變更）→ 執行步驟 3b + 3c + 4
 
-#### Step 3b: 詢問是否建立 ADR（Tier 2）
+#### Step 3b: Code Review（自動化輔助）
+
+> 在 distill 之前先讓 agent 對 diff 做一輪 review。findings 餵進 ADR / gotchas 的草稿；🔴 必修項目觸發回退到 `/ca-plan` 修正後重新進入 close。
+
+**Tier 1**：opt-in，詢問使用者「要不要做一次 code review？(y/N)」。預設跳過。
+
+**Tier 2**：強制執行。
+
+執行方式（agent-agnostic）：
+
+對 `git diff master...HEAD` 進行 code review，重點檢查：
+
+- **正確性**：邏輯錯誤、邊界條件、null / undefined 處理
+- **安全性**：注入風險、敏感資訊洩漏、權限檢查缺失
+- **一致性**：是否符合 constitution file 的 Coding Conventions
+- **架構契合度**：是否違反 nodes.yaml 中該模組的 edges / comm 約束
+- **可維護性**：命名、過度抽象、重複邏輯
+
+輸出格式：
+```
+🔎 Code Review 結果
+
+🔴 必修 (Must fix):
+  - {file}:{line} — {issue}
+
+🟡 建議 (Should consider):
+  - {file}:{line} — {issue}
+
+🟢 觀察 (Nit):
+  - {file}:{line} — {issue}
+```
+
+> Claude Code 使用者可改用 `/review` 或 `/security-review` skill 加速。其他 agent 直接以自然語言請 agent 執行上述 review。
+
+**回退機制（feedback loop）**：
+
+- 若有 🔴 必修項目 → 向使用者呈現清單，詢問：「要先修正再回來 close 嗎？(Y/n)」
+  - Y（預設）→ 中止 /ca-close，提示使用者：「請執行 `/ca-plan {issue-id}` 從 Step 6 接續修正」，回退到實作階段
+  - n → 記錄到「待辦清單」section（在 Step 6 comment 中），繼續流程
+- 🟡 / 🟢 → 直接餵進後續 ADR Gotchas / gotchas.md 草稿，不阻斷流程
+
+#### Step 3c: 詢問是否建立 ADR（Tier 2）
 
 - 摘要本次變更的關鍵決策，向使用者呈現
 - 詢問使用者：「這次的決策值得寫 ADR 嗎？」
