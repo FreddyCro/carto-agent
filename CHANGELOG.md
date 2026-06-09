@@ -6,6 +6,31 @@ Format based on [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## [0.6.0] - 2026-06-09
+
+### Clarifying Questions + 方案比較閘門
+
+啟發自 Anthropic feature-dev plugin 的 Discovery / Clarifying Questions / Architecture Design 階段。CA 既有流程從 C4 定位直接進 PLAN.md，缺一個「規劃前釐清模糊處、比較方案」的閘門；Tier 2 任務尤其容易在 worker 投入 worktree 後才發現方向錯。
+
+參考：[feature-dev plugin (claude-plugins-official)](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/feature-dev)
+
+### Added
+- `/ca-plan` Step 4 — 釐清與方案（Tier 2 only，標記不可跳過）
+  - 4a 釐清 ambiguity（edge case / error handling / scope 邊界 / 相容性）
+  - 4b 提出 2-3 個方案 + trade-off + 推薦，使用者選定後寫進 PLAN
+- `_TEMPLATE-PLAN.md` 新增 Clarifications 與 Alternatives 欄位，選定方案直通 /ca-close 的 ADR Alternatives
+- `/ca-plan` Workflow 狀態列加入「釐清」階段（Tier 1 跳過）
+
+### Changed
+- `/ca-plan` Step 5b 收尾從「理解確認」改為明確派工批准（Y/n）——理解 ≠ 批准，未獲批准不得派工
+
+### 設計決策
+- **釐清 + 方案併成單一 Step** — 兩者同屬「規劃前的方向收斂」，合併避免多一個停頓點
+- **不抄 feature-dev 的 confidence 門檻** — CA 既有 🔴🟡🟢 嚴重度分級已是 noise filter，再加信心門檻冗餘
+- **approval gate 換框而非新增** — Step 5b 本就 wait，只把語意從「你懂嗎」補成「你批准嗎」，零新增流程
+
+---
+
 ## [0.5.0] - 2026-04-01
 
 ### Human Checkpoint: 部署前三問

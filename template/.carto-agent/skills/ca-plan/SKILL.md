@@ -1,7 +1,7 @@
 ---
 name: ca-plan
 description: 統一工作流入口（Tier 1-2 routing）
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, TodoWrite
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, TodoWrite, AskUserQuestion
 ---
 
 ## `/ca-plan` — 統一工作流入口
@@ -13,8 +13,10 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, TodoWrite
 每個 Step 開始時，輸出一行狀態列讓使用者掌握整體進度：
 
 ```
-⚡ [✅ 建檔] → [🔄 偵察] → [⏳ 分流] → [⏳ 規劃] → [⏳ 實作] → [⏳ 驗證] → [⏳ 收尾]
+⚡ [✅ 建檔] → [🔄 偵察] → [⏳ 分流] → [⏳ 釐清] → [⏳ 規劃] → [⏳ 實作] → [⏳ 驗證] → [⏳ 收尾]
 ```
+
+> 「釐清」僅在 Tier 2 觸發；Tier 1 直接從「分流」進「實作」。
 
 符號說明：✅ 完成 / 🔄 進行中 / ⏳ 待執行
 
@@ -84,6 +86,46 @@ subagent 會回傳結構化摘要，直接輸出給使用者：
 | 讀 issue 內容：單檔修改、明確 bug | → Tier 1（建議使用者確認） |
 | 其他（跨多檔、新模組、重構、架構變更） | → Tier 2 |
 
+### Step 4: 釐清與方案（Tier 2 only）
+
+> **不可跳過。** 在投入 PLAN.md 與 worktree 前，先把模糊處問清楚、把方向選定。改方向在這裡只是改文字，到實作後才改成本最高。
+>
+> Tier 1 跳過此步驟，直接進 Step 5。
+
+**4a. 釐清 ambiguity**
+
+根據 Step 2 的架構摘要和 issue 內容，整理出**未明確的決策點**，向使用者提問。重點涵蓋：
+
+- **Edge case**：邊界條件、空值 / 大量資料 / 並發情境如何處理？
+- **Error handling**：失敗時的預期行為（throw / fallback / 靜默）？
+- **Scope 邊界**：哪些明確「不做」？是否觸及 nodes.yaml 中的相鄰模組？
+- **相容性**：是否需向後相容？影響現有 API / 資料格式嗎？
+
+用 `AskUserQuestion` 列出問題（Claude Code）；其他 agent 以條列問題請使用者回答。**收齊答案才進 4b。** 若使用者答「你決定」，則記錄你的假設，供 Step 5b 覆核。
+
+**4b. 提出 2-3 個方案 + 推薦**
+
+針對核心實作方向，列出 2-3 個方案，每個附 trade-off，並標記推薦：
+
+```
+方案比較：
+
+A.（推薦）{方案名}
+   - 做法：{一句話}
+   - 優點：{...}
+   - 取捨：{成本 / 風險 / 限制}
+
+B. {方案名}
+   - 做法 / 優點 / 取捨：{...}
+
+C. {方案名}（如有）
+   - ...
+
+→ 推薦 A，因為 {貼合本專案 context 的理由}。
+```
+
+請使用者選定方案（可選 A/B/C 或提出調整）。**選定的方案會寫進 PLAN.md 的 Decision，並在 /ca-close 寫 ADR 時直接填入 Alternatives 欄位**——釐清與比較的成本不會白費。
+
 ### Step 5: 規劃/定位（依 Tier 分流）
 
 **Tier 1 — 定位問題**
@@ -92,6 +134,8 @@ subagent 會回傳結構化摘要，直接輸出給使用者：
 
 **Tier 2 — PLAN.md**
 - 建立 `docs/tmp/{ticket-id}-PLAN.md`（使用 `docs/adr/_TEMPLATE-PLAN.md` 格式）
+- 將 Step 4b 選定的方案寫入 Decision，未選中的方案連同取捨填入 Alternatives 欄位
+- 將 Step 4a 收齊的釐清結論（edge case / error handling / scope 邊界）反映到 Task 與 Verification
 - 呈現影響的檔案、關鍵決策、風險，供使用者審閱
 
 ### Step 5b: Human Checkpoint — Q1: 我理解這段程式碼嗎？
@@ -115,7 +159,16 @@ Tier 1: 讀修復方向，能解釋改了什麼、為什麼嗎？
 → 如果無法解釋，退回重新理解再繼續。
 ```
 
-等待使用者確認後再進入實作。
+確認理解後，明確徵求派工批准：
+
+```
+✅ 確認方向正確、批准進入實作？(Y/n)
+
+  - Tier 2：批准後才組裝 context card 派工 @ca-worker
+  - 如要調整方案，現在回 Step 4 重選成本最低
+```
+
+**收到明確批准（Y）才進入 Step 6**。未獲批准前不得派工或動 code。若使用者已在 Step 4b 選定方案，可將該選定視為批准，但仍需在此回報「即將依方案 {X} 派工」並給一次喊停的機會。
 
 ### Step 6: 實作（依 Tier 分流）
 

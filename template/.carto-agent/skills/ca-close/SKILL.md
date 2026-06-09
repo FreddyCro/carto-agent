@@ -18,7 +18,7 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Bash
 
 ### Step 1: 讀取工作檔
 
-- 讀取 `docs/tmp/{issue-id}.md` 或 `docs/tmp/PLAN-{issue-id}.md`
+- 讀取 `docs/tmp/{issue-id}.md` 或 `docs/tmp/{issue-id}-PLAN.md`
 - 如不存在，提示使用者先描述變更內容
 
 ### Step 2: 分析變更

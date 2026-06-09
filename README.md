@@ -120,7 +120,7 @@ flowchart TB
 | Tier                     | 觸發條件                       | 流程                                           | 文件產出                          |
 | ------------------------ | ------------------------------ | ---------------------------------------------- | --------------------------------- |
 | **Tier 1: Quick Fix**    | 單檔修改、bug 修復             | 修 → test → commit                             | 無（可選加 gotcha）               |
-| **Tier 2: Planned Task** | 跨多檔、新模組、重構、架構變更 | 建 PLAN.md → 實作 → /ca-close 時決定是否寫 ADR | PLAN.md + gotchas + ADR（opt-in） |
+| **Tier 2: Planned Task** | 跨多檔、新模組、重構、架構變更 | 釐清問題 + 選方案 → 建 PLAN.md → 實作 → /ca-close 時決定是否寫 ADR | PLAN.md + gotchas + ADR（opt-in） |
 
 ```mermaid
 flowchart LR
@@ -134,6 +134,7 @@ flowchart LR
         end
 
         subgraph Tier2["Tier 2: Planned Task"]
+            Clarify["釐清問題 + 選方案"]
             Plan2["建立 PLAN.md"]
             Impl["實作"]
         end
@@ -152,7 +153,7 @@ flowchart LR
 
     Issue --> Gate
     Gate -->|"/ca-plan bug"| Fix1 --> Verify
-    Gate -->|"/ca-plan"| Plan2 --> Impl --> Verify
+    Gate -->|"/ca-plan"| Clarify --> Plan2 --> Impl --> Verify
     Verify --> Review
     Review --> MustFix
     MustFix -->|是| Impl

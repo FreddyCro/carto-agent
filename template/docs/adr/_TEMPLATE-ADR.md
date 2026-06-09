@@ -12,6 +12,10 @@
 
 {決策內容和理由。只記錄 issue 沒有的實作層知識。}
 
+## Alternatives
+
+{考慮過但未採用的方案及取捨。可直接引用 PLAN.md 的 Alternatives 表格。}
+
 ## Architecture (optional)
 
 ```mermaid
