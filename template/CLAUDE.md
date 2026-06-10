@@ -62,6 +62,7 @@
 
 - **Commit**: {suggest-only / auto}
 - **Branch**: {manual / auto}
+- **Base Branch**: {main / master / 留空自動偵測}
 
 | 模式 | 說明 |
 |------|------|

@@ -21,13 +21,23 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Bash
 - 讀取 `docs/tmp/{issue-id}.md` 或 `docs/tmp/{issue-id}-PLAN.md`
 - 如不存在，提示使用者先描述變更內容
 
+### Step 1b: 決定 diff 比較基準 `{base}`
+
+後續步驟中的 `{base}` 為 diff 比較基準，依優先序決定：
+
+1. 工作檔中記錄的 `Baseline` commit（由 `/ca-plan` Step 1 寫入）— 只涵蓋本次 issue 的變更，避免在長壽分支上重複 review 整條 branch 的累積 diff
+2. constitution file / `carto-agent.config.yaml` 的 `base_branch` 設定
+3. 自動偵測：`git symbolic-ref refs/remotes/origin/HEAD`，失敗則依序嘗試 `main`、`master`
+
+向使用者回報採用的基準（例：「diff 基準：Baseline a1b2c3d」）。
+
 ### Step 2: 分析變更
 
 向使用者回報：「正在委託 @ca-explorer 分析變更...」
 
 委託 `@ca-explorer` subagent 分析（避免 diff 輸出佔滿主 context）：
 
-1. 向 `@ca-explorer` 發送：分析 `git diff master...HEAD --stat` 和 `git log master..HEAD --oneline`，回傳變更摘要（涉及模組、scope、檔案數）
+1. 向 `@ca-explorer` 發送：分析 `git diff {base}...HEAD --stat` 和 `git log {base}..HEAD --oneline`，回傳變更摘要（涉及模組、scope、檔案數）
 2. subagent 回傳精簡的變更摘要，主 context 只保留結論
 3. 向使用者回報：「@ca-explorer 分析完成」+ 變更摘要
 
@@ -55,7 +65,7 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Bash
 
 執行方式（agent-agnostic）：
 
-對 `git diff master...HEAD` 進行 code review，重點檢查：
+對 `git diff {base}...HEAD` 進行 code review，重點檢查：
 
 - **正確性**：邏輯錯誤、邊界條件、null / undefined 處理
 - **安全性**：注入風險、敏感資訊洩漏、權限檢查缺失
@@ -117,7 +127,7 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Bash
 - 如果 checklist 為空（無項目或全部被註解）→ 回報「執行了 0 項檢查」，繼續
 - 如果有定義項目 → 委託 `@ca-explorer` 逐項檢查：
   1. 向使用者回報：「正在執行 N 項 review 檢查...」
-  2. 向 `@ca-explorer` 發送：review checklist + `git diff master...HEAD`
+  2. 向 `@ca-explorer` 發送：review checklist + `git diff {base}...HEAD`
   3. @ca-explorer 回傳每項的 pass / warning / critical
   4. 向使用者回報結果：「Review 完成：N pass / N warning / N critical」
   5. 如有 critical → 警告使用者，建議修正後再繼續（不阻斷）

@@ -34,6 +34,7 @@ conventions:
 git_automation:
   commit: suggest-only                 # suggest-only / auto
   branch: manual                       # manual / auto
+  base_branch: ""                      # diff/review 比較基準分支，留空自動偵測（origin HEAD → main → master）
 
 key_paths:
   modules: []                          # e.g. [src/packages/, src/modules/]
