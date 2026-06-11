@@ -19,7 +19,11 @@ maxTurns: 30
 
 ## 工作流程
 
-1. 讀取 context card，確認理解任務
+1. **審卡** — 開工前批判性審查 context card：
+   - Task 步驟是否含糊到無法執行（「加上驗證」「處理錯誤」這類沒有具體做法的描述）？
+   - Goal / Task / Verification 之間是否矛盾？
+   - File Scope 是否足以完成所有 Task？
+   - 發現任一問題 → 回報 BLOCKED（附具體缺口），**不開工**
 2. 讀取 File Scope 中的所有檔案，理解現有 code
 3. 按 Task checklist 逐步實作
 4. 完成後執行 Verification 中的所有驗證步驟
@@ -59,4 +63,5 @@ QUESTION: {具體問題}
 - **遵循 Conventions** — commit style、file naming、coding style 依 context card 指示
 - **必須驗證** — 完成後一定要跑 test + lint，不可跳過
 - **不猜測** — 遇到不確定的決策，回報 BLOCKED 而非自行決定
+- **先質疑再動手** — 計畫有 gap 時回報 BLOCKED，而非靠猜補洞硬做完
 - **精簡回報** — 只回報結構化結果，不解釋過程

@@ -120,7 +120,7 @@ flowchart TB
 | Tier                     | 觸發條件                       | 流程                                           | 文件產出                          |
 | ------------------------ | ------------------------------ | ---------------------------------------------- | --------------------------------- |
 | **Tier 1: Quick Fix**    | 單檔修改、bug 修復             | 修 → test → commit                             | 無（可選加 gotcha）               |
-| **Tier 2: Planned Task** | 跨多檔、新模組、重構、架構變更 | 釐清問題 + 選方案 → 建 PLAN.md → 實作 → /ca-close 時決定是否寫 ADR | PLAN.md + gotchas + ADR（opt-in） |
+| **Tier 2: Planned Task** | 跨多檔、新模組、重構、架構變更 | 釐清問題 + 選方案 → 建 PLAN.md + 自我審查 → 派工批准 → ca-worker 審卡 → 實作 → /ca-close 時決定是否寫 ADR | PLAN.md + gotchas + ADR（opt-in） |
 
 ```mermaid
 flowchart LR
@@ -135,7 +135,10 @@ flowchart LR
 
         subgraph Tier2["Tier 2: Planned Task"]
             Clarify["釐清問題 + 選方案"]
-            Plan2["建立 PLAN.md"]
+            Plan2["建立 PLAN.md<br/>(禁止 placeholder)"]
+            SelfReview["PLAN 自我審查"]
+            Q1{"Q1 派工批准"}
+            CardReview["ca-worker 審卡"]
             Impl["實作"]
         end
 
@@ -153,7 +156,12 @@ flowchart LR
 
     Issue --> Gate
     Gate -->|"/ca-plan bug"| Fix1 --> Verify
-    Gate -->|"/ca-plan"| Clarify --> Plan2 --> Impl --> Verify
+    Gate -->|"/ca-plan"| Clarify --> Plan2 --> SelfReview
+    SelfReview -->|"發現問題，自行修"| Plan2
+    SelfReview -->|"乾淨"| Q1
+    Q1 -->|"批准，組 context card"| CardReview
+    CardReview -->|"計畫有 gap"| Clarify
+    CardReview -->|"OK"| Impl --> Verify
     Verify --> Review
     Review --> MustFix
     MustFix -->|是| Impl
@@ -387,5 +395,6 @@ CartoAgent 的設計受到以下概念啟發：
 - **[Mermaid](https://mermaid.js.org/)** — 零依賴的 Markdown 原生視覺化
 - **[Claude Code](https://docs.anthropic.com/en/docs/claude-code)** — Skills、Hooks、Subagents、MCP 原語
 - **[Agent Responsibly](https://vercel.com/blog/agent-responsibly)** — 部署前三問：Human Checkpoint 嵌入 AI 工作流
+- **[Superpowers](https://github.com/obra/superpowers)** — brainstorming / writing-plans / executing-plans 三段式工作流：設計批准前不寫 code 的 hard gate、計畫零含糊（禁止 placeholder，寫給零 codebase 熟悉度的執行者）、執行者遇阻塞即停不猜測 — 對應 `/ca-plan` Step 4 釐清方案 → PLAN.md / context card → @ca-worker
 - **[Harness Engineering](https://openai.com/zh-Hant/index/harness-engineering/)** — OpenAI 對 AI agent harness 工程設計的實踐分享
 - **[Harness Design for Long-Running Apps](https://www.anthropic.com/engineering/harness-design-long-running-apps)** — 分離 generator / evaluator agent 角色，讓 Claude 在多小時 coding session 中穩定產出高品質成果

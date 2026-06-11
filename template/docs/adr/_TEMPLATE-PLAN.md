@@ -33,6 +33,8 @@
 
 ## Sprint 1: {name}
 
+> Task 描述禁止 placeholder（「加上驗證」「TBD」）：寫明確切檔案、具體做法、預期結果。標準：對 codebase 零熟悉的執行者能獨立完成。
+
 - [ ] Task 1.1: {description}
 - [ ] Task 1.2: {description}
 

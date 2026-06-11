@@ -139,7 +139,21 @@ C. {方案名}（如有）
 - 建立 `docs/tmp/{ticket-id}-PLAN.md`（使用 `docs/adr/_TEMPLATE-PLAN.md` 格式）
 - 將 Step 4b 選定的方案寫入 Decision，未選中的方案連同取捨填入 Alternatives 欄位
 - 將 Step 4a 收齊的釐清結論（edge case / error handling / scope 邊界）反映到 Task 與 Verification
+- **禁止 placeholder**：每個 Task 寫到可獨立執行 — 確切檔案路徑、具體做法、預期結果。不得出現「加上驗證」「處理錯誤」「TBD」這類含糊描述。標準：假設讀者是技術強但對本 codebase 零熟悉的工程師（ca-worker 正是這樣的讀者）
 - 呈現影響的檔案、關鍵決策、風險，供使用者審閱
+
+### Step 5a: PLAN 自我審查（Tier 2 only）
+
+> 呈給使用者前先自查 — 讓 Step 5b 收到的是已過濾的計畫，減少人類來回成本。
+
+逐項檢查 PLAN.md：
+
+- **Placeholder 殘留**：是否還有含糊描述？每個 Task 是否有確切路徑與具體做法？
+- **前後矛盾**：Decision 與 Task 是否一致？命名 / 型別在各 section 間是否一致？
+- **釐清結論遺漏**：Step 4a 的每個答案是否都反映到 Task 或 Verification？
+- **Scope 漂移**：是否出現 issue 與釐清階段都沒提到的工作項？
+
+發現問題 → 自行修正 PLAN.md 後重查，不需詢問使用者。完成後以一行回報結果（例：「自我審查：修正 2 處含糊描述，無矛盾」或「自我審查：無發現」），再進 Step 5b。
 
 ### Step 5b: Human Checkpoint — Q1: 我理解這段程式碼嗎？
 
@@ -214,7 +228,9 @@ Tier 1: 讀修復方向，能解釋改了什麼、為什麼嗎？
 4. 收到回報後，向使用者回報結果並處理：
    - **DONE** → 「@ca-worker 完成：{修改的檔案數} 個檔案，test {pass/fail}」→ 進入 Step 7
    - **FAIL** → 「@ca-worker 失敗：{原因摘要}」→ 決定調整 card 重派或主代理接手
-   - **BLOCKED** → 「@ca-worker 被阻塞：{問題}」→ 處理阻塞，解除後重派
+   - **BLOCKED** → 「@ca-worker 被阻塞：{問題}」→ 分情況處理：
+     - **審卡發現計畫 gap**（含糊步驟、前後矛盾、File Scope 不足）→ 回 Step 4/5 補釐清或修正 PLAN.md，更新 context card 後重派
+     - 其他阻塞（需使用者決策、缺少資訊）→ 處理阻塞，解除後重派
 
 ### Step 7: 驗證
 

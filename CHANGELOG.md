@@ -6,6 +6,32 @@ Format based on [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## [0.7.0] - 2026-06-11
+
+### PLAN 自我審查 + ca-worker 審卡
+
+啟發自 obra/superpowers 的 brainstorming / writing-plans / executing-plans 三段式工作流。CA 的 Tier 2 鏈原本只有一道人類閘門（Step 5b 派工批准）和一個 feedback loop（/ca-close review → 實作，最貴的回退點）；本次在更便宜的位置補上兩個自動閘門：agent 呈計畫前先自查、worker 開工前先質疑。
+
+參考：[Superpowers (obra)](https://github.com/obra/superpowers) — brainstorming / writing-plans / executing-plans
+
+### Added
+- `/ca-plan` Step 5a — PLAN 自我審查（Tier 2 only）：placeholder 殘留 / 前後矛盾 / 釐清結論遺漏 / scope 漂移，自行修正後才進 Step 5b
+- `/ca-plan` Step 5 — 禁止 placeholder 規則：Task 寫到對 codebase 零熟悉的執行者可獨立完成
+- `ca-worker` 工作流程加入「審卡」步驟：開工前批判性審查 context card，有 gap 回報 BLOCKED 不開工；規則新增「先質疑再動手」
+- `_TEMPLATE-PLAN.md` Sprint section 加入 Task 撰寫標準提示
+
+### Changed
+- `/ca-plan` Step 6 BLOCKED 處理分流：審卡發現計畫 gap → 回 Step 4/5 修正後重派；其他阻塞照舊
+- README Tier 分流圖更新：Tier 2 鏈呈現 自我審查（自迴圈）→ Q1 派工批准 → 審卡（回退釐清）三層閘門
+
+### 設計決策
+- **兩個新閘門都是 agent 自動執行，不增加人類互動** — 自我審查無發現一行帶過、審卡無 gap 直接開工，Tier 2 小任務不付額外等待
+- **回退點往便宜處搬** — 自我審查在「改文字」階段攔、審卡在「派工前」攔，與既有原則（改方向在規劃階段成本最低）同向
+- **不抄 superpowers 的強制 TDD 與 2-5 分鐘粒度** — 前者綁定開發方法論違反 agent-agnostic，後者由 PLAN 模板的 Sprint/Task 結構自然約束
+- **Tier Gate 維持 CA 特色** — superpowers 所有任務走完整流程，CA 保留 Tier 1 免規劃通道
+
+---
+
 ## [0.6.0] - 2026-06-09
 
 ### Clarifying Questions + 方案比較閘門
